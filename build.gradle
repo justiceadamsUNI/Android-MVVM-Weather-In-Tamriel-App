@@ -9,6 +9,8 @@ buildscript {
     ext.picasso_version = '2.5.2'
     ext.ok_http_version = '3.9.1'
     ext.retrofit_version = '2.3.0'
+    ext.rx_kotlin_version = '2.2.0'
+    ext.dagger_version = '2.14.1'
 
 
     repositories {
