@@ -27,9 +27,9 @@ class WeatherListActivity : AppCompatActivity() {
         weatherForecastRepository.getForecast(::updateData)
     }
 
-//    private fun updateData(forecasts: List<ForecastModel>){
-//        val controller = WeatherListEpoxyController()
-//        forecast_list.adapter = controller.adapter
-//        controller.setData(forecasts)
-//    }
+    private fun updateData(forecasts: List<ForecastModel>){
+        val controller = WeatherListEpoxyController()
+        forecast_list.adapter = controller.adapter
+        controller.setData(forecasts)
+    }
 }
