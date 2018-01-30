@@ -1,10 +1,13 @@
-package weatherintamriel.model
+package weatherintamriel.model.map
 
+import weatherintamriel.model.ForecastModel
+import weatherintamriel.model.ForecastRequestResult
+import weatherintamriel.model.ForecastResult
 import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ForecastDataMapper {
+class ForecastResultToForecastModelMapper {
 
     fun convertToModel(forecast: ForecastRequestResult): List<ForecastModel> {
         return convertForecastListToDomain(forecast.list)
