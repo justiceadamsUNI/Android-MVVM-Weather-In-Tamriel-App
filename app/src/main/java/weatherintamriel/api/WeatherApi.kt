@@ -3,6 +3,7 @@ package weatherintamriel.api
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import weatherintamriel.model.CurrentWeatherResult
 import weatherintamriel.model.ForecastRequestResult
 import javax.inject.Singleton
 
@@ -16,6 +17,9 @@ interface WeatherApi {
         private const val COUNT = "7"
     }
 
-    @GET("daily?APPID=$APP_ID&mode=$MODE&units=$UNITS&cnt=$COUNT")
+    @GET("forecast/daily?APPID=$APP_ID&mode=$MODE&units=$UNITS&cnt=$COUNT")
     fun getForecastForZipCode(@Query("zip") zipCode: Int): Call<ForecastRequestResult>
+
+    @GET("weather?APPID=$APP_ID&mode=$MODE&units=$UNITS")
+    fun getCurrentWeatherForZipCode(@Query("zip") zipCode: Int): Call<CurrentWeatherResult>
 }

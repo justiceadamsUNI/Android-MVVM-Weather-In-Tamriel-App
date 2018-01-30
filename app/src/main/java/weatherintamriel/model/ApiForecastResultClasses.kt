@@ -17,3 +17,10 @@ data class TemperatureResult(val day: Float, val min: Float, val max: Float,
 
 data class WeatherResult(val id: Long, val main: String, val description: String,
                          val icon: String)
+
+data class CurrentWeatherResult(val weather: List<WeatherResult>, val main: MainResult)
+
+data class MainResult(val temp: Float,
+                val temp_min: Float,
+                val temp_max: Float,
+                val humidity: Int)

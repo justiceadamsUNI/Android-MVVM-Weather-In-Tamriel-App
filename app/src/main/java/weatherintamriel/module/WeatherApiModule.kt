@@ -1,6 +1,5 @@
 package weatherintamriel.module
 
-import weatherintamriel.api.WeatherApi
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -8,11 +7,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import weatherintamriel.api.WeatherApi
 import javax.inject.Singleton
 
 @Module
 class WeatherApiModule {
-    private val BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/"
+    private val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 
     @Provides
     @Singleton
