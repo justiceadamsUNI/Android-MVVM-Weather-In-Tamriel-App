@@ -8,9 +8,8 @@ import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.squareup.picasso.Picasso
 import justiceadams.com.weatherintamriel.R
 import weatherintamriel.model.ForecastModel
-import weatherintamriel.model.ForecastRequestResult
 
-data class WeatherListEpoxyModel(private val forecast: ForecastModel) : EpoxyModelWithHolder<ViewHolder>() {
+data class ForecastListRowEpoxyModel(private val forecast: ForecastModel) : EpoxyModelWithHolder<ViewHolder>() {
     override fun getDefaultLayout() = R.layout.row_regular_forecast_item
 
     override fun createNewHolder() = ViewHolder()
@@ -29,8 +28,8 @@ data class WeatherListEpoxyModel(private val forecast: ForecastModel) : EpoxyMod
         holder.minTemperatureView.text = forecast.low.toString()
     }
 
-    private fun loadIcon(holder: ViewHolder?) {
-        Picasso.with(holder?.iconView?.context).load(forecast.iconUrl).into(holder?.iconView)
+    private fun loadIcon(holder: ViewHolder) {
+        Picasso.with(holder.iconView.context).load(forecast.iconUrl).into(holder.iconView)
     }
 }
 

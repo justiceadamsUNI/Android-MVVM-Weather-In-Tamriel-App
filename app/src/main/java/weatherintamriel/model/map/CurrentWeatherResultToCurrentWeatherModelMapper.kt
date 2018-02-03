@@ -11,7 +11,7 @@ class CurrentWeatherResultToCurrentWeatherModelMapper {
         val weatherResult = weather.weather[0]
 
         return CurrentWeatherModel(
-                convertDate(weather.dt),
+                getDate(),
                 weatherResult.description,
                 weather.main.temp,
                 weather.main.temp_min,
@@ -20,7 +20,8 @@ class CurrentWeatherResultToCurrentWeatherModelMapper {
                 generateIconUrl(weatherResult.icon))
     }
 
-    private fun convertDate(date: Long): String {
+    private fun getDate(): String {
+        val date = Calendar.getInstance().timeInMillis
         val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
         return dateFormat.format(date)
     }

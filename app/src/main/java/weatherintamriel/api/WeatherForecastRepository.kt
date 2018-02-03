@@ -18,35 +18,31 @@ class WeatherForecastRepository {
         this.weatherApi = weatherApi
     }
 
-    fun getForecast(onForecastLoaded: (List<ForecastModel>) -> Unit){
+    fun getForecastAndCurrentWeather(onDataLoaded: (List<ForecastModel>,
+                                                    CurrentWeatherModel) -> Unit){
         doAsync {
-            val weather = weatherApi
+            val forecastList = weatherApi
                     .getForecastForZipCode(50613) //ToDo: Make this dynamic
                     .execute()
                     .body()
 
-            uiThread {
-                onForecastLoaded(weather
-                                ?.let{ ForecastResultToForecastModelMapper()
-                                        .convertToModel(weather)}
-                                .orEmpty())
-            }
-        }
-    }
-
-    fun getCurrentWeather(onCurrentWeatherLoaded: (CurrentWeatherModel) -> Unit){
-        doAsync {
             val weather = weatherApi
                     .getCurrentWeatherForZipCode(50613) //ToDo: Make this dynamic
                     .execute()
                     .body()
 
             uiThread {
-                onCurrentWeatherLoaded(weather
+                val currentWeatherModel: CurrentWeatherModel = weather
                         ?.let{ CurrentWeatherResultToCurrentWeatherModelMapper()
                                 .convertToModel(weather) }
-                        ?: throw Exception())
+                        ?: throw Exception()
 
+                val forecastModelList = forecastList
+                        ?.let{ ForecastResultToForecastModelMapper()
+                                .convertToModel(forecastList)}
+                        .orEmpty()
+
+                onDataLoaded(forecastModelList, currentWeatherModel)
             }
         }
     }
