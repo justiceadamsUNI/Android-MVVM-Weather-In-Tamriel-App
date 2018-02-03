@@ -5,7 +5,6 @@ import weatherintamriel.model.ForecastRequestResult
 import weatherintamriel.model.ForecastResult
 import java.text.DateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ForecastResultToForecastModelMapper {
 
@@ -14,9 +13,9 @@ class ForecastResultToForecastModelMapper {
     }
 
     private fun convertForecastListToDomain(list: List<ForecastResult>): List<ForecastModel> {
-        return list.mapIndexed { i, forecast ->
-            val date = Calendar.getInstance().timeInMillis + TimeUnit.DAYS.toMillis(i.toLong())
-            convertForecastItemToDomain(forecast.copy(dt = date))
+        return list.map { forecast ->
+            // Api returns Unix_time so we multiply by 1000 to get milliseconds
+            convertForecastItemToDomain(forecast.copy(dt = forecast.dt * 1000))
         }
     }
 

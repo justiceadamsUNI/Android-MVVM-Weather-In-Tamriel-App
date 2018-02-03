@@ -11,7 +11,7 @@ class CurrentWeatherResultToCurrentWeatherModelMapper {
         val weatherResult = weather.weather[0]
 
         return CurrentWeatherModel(
-                getDate(),
+                getDate(weather),
                 weatherResult.description,
                 weather.main.temp,
                 weather.main.temp_min,
@@ -20,10 +20,10 @@ class CurrentWeatherResultToCurrentWeatherModelMapper {
                 generateIconUrl(weatherResult.icon))
     }
 
-    private fun getDate(): String {
-        val date = Calendar.getInstance().timeInMillis
+    private fun getDate(currentWeatherResult: CurrentWeatherResult): String {
         val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-        return dateFormat.format(date)
+        // Api returns Unix_time so we multiply by 1000 to get milliseconds
+        return dateFormat.format(currentWeatherResult.dt * 1000)
     }
 
     private fun generateIconUrl(iconCode: String): String = "http://openweathermap.org/img/w/$iconCode.png"
