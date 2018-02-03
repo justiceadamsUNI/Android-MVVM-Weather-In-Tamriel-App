@@ -18,32 +18,45 @@ class WeatherForecastRepository {
         this.weatherApi = weatherApi
     }
 
-    fun getForecastAndCurrentWeather(onDataLoaded: (List<ForecastModel>,
-                                                    CurrentWeatherModel) -> Unit){
+    fun getForecasts(callback: Callback) {
         doAsync {
             val forecastList = weatherApi
                     .getForecastForZipCode(50613) //ToDo: Make this dynamic
                     .execute()
                     .body()
 
+            uiThread {
+                val forecastModelList = forecastList
+                        ?.let{ ForecastResultToForecastModelMapper()
+                                .convertToModel(forecastList)
+                        }.orEmpty()
+
+                callback.onForecastLoaded(forecastModelList)
+            }
+        }
+    }
+
+    fun getCurrentWeather(callback: Callback) {
+        doAsync {
             val weather = weatherApi
                     .getCurrentWeatherForZipCode(50613) //ToDo: Make this dynamic
                     .execute()
                     .body()
-
             uiThread {
                 val currentWeatherModel: CurrentWeatherModel = weather
-                        ?.let{ CurrentWeatherResultToCurrentWeatherModelMapper()
-                                .convertToModel(weather) }
-                        ?: throw Exception()
+                        ?.let {
+                            CurrentWeatherResultToCurrentWeatherModelMapper()
+                                    .convertToModel(weather)
+                        } ?: throw Exception("Couldn't get current weather data!")
 
-                val forecastModelList = forecastList
-                        ?.let{ ForecastResultToForecastModelMapper()
-                                .convertToModel(forecastList)}
-                        .orEmpty()
-
-                onDataLoaded(forecastModelList, currentWeatherModel)
+                callback.onCurrentWeatherLoaded(currentWeatherModel)
             }
         }
+    }
+
+    interface Callback {
+        fun onForecastLoaded(forecasts: List<ForecastModel>)
+
+        fun onCurrentWeatherLoaded(currentWeather: CurrentWeatherModel)
     }
 }

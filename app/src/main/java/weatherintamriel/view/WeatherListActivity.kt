@@ -12,7 +12,11 @@ import weatherintamriel.model.ForecastModel
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import javax.inject.Inject
 
-class WeatherListActivity : AppCompatActivity() {
+class WeatherListActivity : AppCompatActivity(), WeatherForecastRepository.Callback {
+    private var forecastLoaded = false
+    private var currentWeatherLoaded = false
+    private var forecasts: List<ForecastModel> = emptyList()
+    private lateinit var currentWeather: CurrentWeatherModel
 
     @Inject lateinit var weatherForecastRepository: WeatherForecastRepository
 
@@ -23,7 +27,8 @@ class WeatherListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_weather_list)
         forecast_list.layoutManager = LinearLayoutManager(this)
 
-        weatherForecastRepository.getForecastAndCurrentWeather(::updateData)
+        weatherForecastRepository.getCurrentWeather(this)
+        weatherForecastRepository.getForecasts(this)
     }
 
     private fun updateData(forecasts: List<ForecastModel>,
@@ -31,5 +36,23 @@ class WeatherListActivity : AppCompatActivity() {
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
         controller.setData(forecasts, currentWeather)
+    }
+
+    override fun onForecastLoaded(forecasts: List<ForecastModel>) {
+        if (currentWeatherLoaded) {
+            updateData(forecasts, currentWeather)
+        } else{
+            forecastLoaded = true
+            this.forecasts = forecasts
+        }
+    }
+
+    override fun onCurrentWeatherLoaded(currentWeather: CurrentWeatherModel) {
+        if (forecastLoaded) {
+            updateData(forecasts, currentWeather)
+        } else{
+            currentWeatherLoaded = true
+            this.currentWeather = currentWeather
+        }
     }
 }
