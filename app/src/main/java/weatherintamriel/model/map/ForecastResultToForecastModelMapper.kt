@@ -1,5 +1,6 @@
 package weatherintamriel.model.map
 
+import android.text.format.DateUtils
 import weatherintamriel.model.ForecastModel
 import weatherintamriel.model.ForecastRequestResult
 import weatherintamriel.model.ForecastResult
@@ -9,12 +10,13 @@ import java.util.*
 class ForecastResultToForecastModelMapper {
 
     fun convertToModel(forecast: ForecastRequestResult): List<ForecastModel> {
-        return convertForecastListToDomain(forecast.list)
+        return convertForecastListToDomain(
+                // Api returns Unix_time so we multiply by 1000 to get milliseconds
+                forecast.list.filter { !DateUtils.isToday(it.dt * 1000)})
     }
 
     private fun convertForecastListToDomain(list: List<ForecastResult>): List<ForecastModel> {
         return list.map { forecast ->
-            // Api returns Unix_time so we multiply by 1000 to get milliseconds
             convertForecastItemToDomain(forecast.copy(dt = forecast.dt * 1000))
         }
     }
