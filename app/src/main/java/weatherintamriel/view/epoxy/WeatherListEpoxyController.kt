@@ -6,10 +6,10 @@ import weatherintamriel.model.ForecastModel
 
 class WeatherListEpoxyController: EpoxyController() {
     private var forecastList = listOf<ForecastModel>()
-    private lateinit var currentWeather: CurrentWeatherModel
+    private var currentWeather: CurrentWeatherModel? = null
 
 
-    fun setData(forecastList: List<ForecastModel>, currentWeather: CurrentWeatherModel) {
+    fun setData(forecastList: List<ForecastModel>, currentWeather: CurrentWeatherModel?) {
         this.forecastList = forecastList
         this.currentWeather = currentWeather
 
@@ -18,8 +18,9 @@ class WeatherListEpoxyController: EpoxyController() {
 
     override fun buildModels() {
         //The id is the date since we only display one model per day!
-        add(CurrentWeatherEpoxyModel(currentWeather).apply { id(-10) }) //ToDo: change so that we filter today out of other list. That way date can be id here.
+        val currentWeather = this.currentWeather
+        currentWeather?.let { add(CurrentWeatherEpoxyModel(currentWeather).apply { id(it.date) }) }
+
         add(forecastList.map { ForecastRowEpoxyModel(it).apply { id(it.date) } })
     }
-
 }

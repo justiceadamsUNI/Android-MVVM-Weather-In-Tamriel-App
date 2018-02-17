@@ -1,18 +1,21 @@
 package weatherintamriel.view
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weatherintamriel.WeatherInTamrielApplication
-import weatherintamriel.model.CurrentWeatherModel
-import weatherintamriel.model.ForecastModel
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import weatherintamriel.viewmodel.WeatherListViewModel
+import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
+    lateinit var weatherListViewModel: WeatherListViewModel
+
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,12 +27,21 @@ class WeatherListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_weather_list)
         forecast_list.layoutManager = LinearLayoutManager(this)
+
+        weatherListViewModel =
+                ViewModelProviders
+                        .of(this, weatherListViewModelFactory)
+                        .get(WeatherListViewModel::class.java)
+
+        weatherListViewModel.viewstate.observe(this, Observer(::updateState))
     }
 
-    private fun updateData(forecasts: List<ForecastModel>,
-                           currentWeather: CurrentWeatherModel){
+    private fun updateState(weatherListViewState: WeatherListViewState?){
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
-        controller.setData(forecasts, currentWeather)
+
+        controller.setData(
+                weatherListViewState?.forecasts.orEmpty(),
+                weatherListViewState?.currentWeather)
     }
 }

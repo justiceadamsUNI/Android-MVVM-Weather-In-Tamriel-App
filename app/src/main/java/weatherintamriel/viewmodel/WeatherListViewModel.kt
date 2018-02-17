@@ -12,6 +12,13 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
 
     val viewstate = MutableLiveData<WeatherListViewState>()
 
+    init {
+        viewstate.value = WeatherListViewState(forecasts = emptyList(), currentWeather = null)
+
+        getForecast()
+        getCurrentWeather()
+    }
+
     private fun getForecast(){
         weatherRepository.getForecasts(this)
     }
