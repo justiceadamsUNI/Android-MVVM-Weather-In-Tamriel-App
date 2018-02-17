@@ -6,19 +6,19 @@ import android.support.v7.widget.LinearLayoutManager
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weatherintamriel.WeatherInTamrielApplication
-import weatherintamriel.api.WeatherForecastRepository
+import weatherintamriel.api.WeatherRepository
 import weatherintamriel.model.CurrentWeatherModel
 import weatherintamriel.model.ForecastModel
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import javax.inject.Inject
 
-class WeatherListActivity : AppCompatActivity(), WeatherForecastRepository.Callback {
+class WeatherListActivity : AppCompatActivity(), WeatherRepository.Callback {
     private var forecastLoaded = false
     private var currentWeatherLoaded = false
     private var forecasts: List<ForecastModel> = emptyList()
     private lateinit var currentWeather: CurrentWeatherModel
 
-    @Inject lateinit var weatherForecastRepository: WeatherForecastRepository
+    @Inject lateinit var weatherRepository: WeatherRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +27,8 @@ class WeatherListActivity : AppCompatActivity(), WeatherForecastRepository.Callb
         setContentView(R.layout.activity_weather_list)
         forecast_list.layoutManager = LinearLayoutManager(this)
 
-        weatherForecastRepository.getCurrentWeather(this)
-        weatherForecastRepository.getForecasts(this)
+        weatherRepository.getCurrentWeather(this)
+        weatherRepository.getForecasts(this)
     }
 
     private fun updateData(forecasts: List<ForecastModel>,

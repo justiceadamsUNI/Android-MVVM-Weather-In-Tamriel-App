@@ -1,13 +1,13 @@
 package weatherintamriel.component
 
-import weatherintamriel.api.WeatherApi
 import dagger.Component
+import weatherintamriel.api.WeatherApi
 import weatherintamriel.module.WeatherApiModule
-import weatherintamriel.module.WeatherForecastRepositoryModule
+import weatherintamriel.module.WeatherRepositoryModule
 import weatherintamriel.view.WeatherListActivity
 import javax.inject.Singleton
 
-@Component(modules = [(WeatherApiModule::class), (WeatherForecastRepositoryModule::class)])
+@Component(modules = [(WeatherApiModule::class), (WeatherRepositoryModule::class)])
 
 @Singleton
 interface WeatherRepositoryComponent {

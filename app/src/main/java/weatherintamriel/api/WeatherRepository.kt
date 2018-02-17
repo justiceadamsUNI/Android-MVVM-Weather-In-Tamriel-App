@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class WeatherForecastRepository {
+class WeatherRepository {
     private var weatherApi: WeatherApi
 
     @Inject

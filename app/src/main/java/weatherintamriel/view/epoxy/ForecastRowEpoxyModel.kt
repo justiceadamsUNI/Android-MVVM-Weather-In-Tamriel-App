@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 import justiceadams.com.weatherintamriel.R
 import weatherintamriel.model.ForecastModel
 
-data class ForecastListRowEpoxyModel(private val forecast: ForecastModel) : EpoxyModelWithHolder<ViewHolder>() {
+data class ForecastRowEpoxyModel(private val forecast: ForecastModel) : EpoxyModelWithHolder<ViewHolder>() {
     override fun getDefaultLayout() = R.layout.row_regular_forecast_item
 
     override fun createNewHolder() = ViewHolder()
