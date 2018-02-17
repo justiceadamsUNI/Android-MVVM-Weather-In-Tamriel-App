@@ -11,6 +11,7 @@ buildscript {
     ext.retrofit_version = '2.3.0'
     ext.rx_kotlin_version = '2.2.0'
     ext.dagger_version = '2.14.1'
+    ext.architecture_components_version = '1.1.0'
 
 
     repositories {
