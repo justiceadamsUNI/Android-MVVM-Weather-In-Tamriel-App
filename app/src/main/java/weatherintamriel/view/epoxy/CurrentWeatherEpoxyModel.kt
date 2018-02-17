@@ -26,7 +26,7 @@ data class CurrentWeatherEpoxyModel(private val weather: CurrentWeatherModel) : 
         holder.description.text = weather.description
         holder.maxTemperature.text = "Max Temp: ${weather.temp_max}°"
         holder.minTemperature.text = "Min Temp: ${weather.temp_min}°"
-        holder.currentTemperature.text = "Min Temp: ${weather.temp}°"
+        holder.currentTemperature.text = "Current: ${weather.temp}°"
         holder.humidity.text = "Humidity: ${weather.humidity}%"
     }
 
