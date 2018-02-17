@@ -6,29 +6,24 @@ import android.support.v7.widget.LinearLayoutManager
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weatherintamriel.WeatherInTamrielApplication
-import weatherintamriel.api.WeatherRepository
 import weatherintamriel.model.CurrentWeatherModel
 import weatherintamriel.model.ForecastModel
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
+import weatherintamriel.viewmodel.WeatherListViewModel
 import javax.inject.Inject
 
-class WeatherListActivity : AppCompatActivity(), WeatherRepository.Callback {
-    private var forecastLoaded = false
-    private var currentWeatherLoaded = false
-    private var forecasts: List<ForecastModel> = emptyList()
-    private lateinit var currentWeather: CurrentWeatherModel
-
-    @Inject lateinit var weatherRepository: WeatherRepository
+class WeatherListActivity : AppCompatActivity() {
+    @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (application as WeatherInTamrielApplication).getWeatherRepositoryComponent().inject(this)
+
+        (application as WeatherInTamrielApplication)
+                .getWeatherListViewComponent()
+                .inject(this)
 
         setContentView(R.layout.activity_weather_list)
         forecast_list.layoutManager = LinearLayoutManager(this)
-
-        weatherRepository.getCurrentWeather(this)
-        weatherRepository.getForecasts(this)
     }
 
     private fun updateData(forecasts: List<ForecastModel>,
@@ -36,23 +31,5 @@ class WeatherListActivity : AppCompatActivity(), WeatherRepository.Callback {
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
         controller.setData(forecasts, currentWeather)
-    }
-
-    override fun onForecastLoaded(forecasts: List<ForecastModel>) {
-        if (currentWeatherLoaded) {
-            updateData(forecasts, currentWeather)
-        } else{
-            forecastLoaded = true
-            this.forecasts = forecasts
-        }
-    }
-
-    override fun onCurrentWeatherLoaded(currentWeather: CurrentWeatherModel) {
-        if (forecastLoaded) {
-            updateData(forecasts, currentWeather)
-        } else{
-            currentWeatherLoaded = true
-            this.currentWeather = currentWeather
-        }
     }
 }

@@ -1,16 +1,16 @@
 package weatherintamriel
 
 import android.app.Application
-import weatherintamriel.component.DaggerWeatherRepositoryComponent
-import weatherintamriel.component.WeatherRepositoryComponent
+import weatherintamriel.component.DaggerWeatherListViewComponent
+import weatherintamriel.component.WeatherListViewComponent
 
 class WeatherInTamrielApplication: Application() {
-    private val weatherRepositoryComponent: WeatherRepositoryComponent =
-            DaggerWeatherRepositoryComponent
+    private val weatherListViewComponent: WeatherListViewComponent =
+            DaggerWeatherListViewComponent
                     .builder()
                     .build()
 
-    fun getWeatherRepositoryComponent(): WeatherRepositoryComponent {
-        return weatherRepositoryComponent
+    fun getWeatherListViewComponent(): WeatherListViewComponent {
+        return weatherListViewComponent
     }
 }
