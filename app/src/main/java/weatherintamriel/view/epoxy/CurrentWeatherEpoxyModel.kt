@@ -24,9 +24,9 @@ data class CurrentWeatherEpoxyModel(private val weather: CurrentWeatherModel) : 
     private fun populateViewHolderText(holder: CurrentWeatherViewHolder) {
         holder.date.text = weather.date
         holder.description.text = weather.description
-        holder.maxTemperature.text = "Max Temp: ${weather.temp_max}°"
-        holder.minTemperature.text = "Min Temp: ${weather.temp_min}°"
-        holder.currentTemperature.text = "Current: ${weather.temp}°"
+        holder.maxTemperature.text = "Max Temp: ${weather.temp_max} F"
+        holder.minTemperature.text = "Min Temp: ${weather.temp_min} F"
+        holder.currentTemperature.text = "Current: ${weather.temp} F"
         holder.humidity.text = "Humidity: ${weather.humidity}%"
     }
 

@@ -22,14 +22,14 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
+        <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:text="May 14, 2015" />
 
-        <TextView
+        <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,14 +44,14 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
+        <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/maxTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:text="30" />
 
-        <TextView
+        <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/minTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
