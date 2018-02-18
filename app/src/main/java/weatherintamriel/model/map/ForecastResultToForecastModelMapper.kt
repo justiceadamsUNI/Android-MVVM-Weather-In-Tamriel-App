@@ -9,7 +9,7 @@ import java.util.*
 
 class ForecastResultToForecastModelMapper {
 
-    fun convertToModel(forecast: ForecastRequestResult): List<ForecastModel> {
+    fun convertToListOfModels(forecast: ForecastRequestResult): List<ForecastModel> {
         return convertForecastListToDomain(
                 // Api returns Unix_time so we multiply by 1000 to get milliseconds
                 forecast.list.filter { !DateUtils.isToday(it.dt * 1000)})

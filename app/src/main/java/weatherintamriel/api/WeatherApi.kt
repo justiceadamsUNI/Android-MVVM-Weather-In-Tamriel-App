@@ -1,6 +1,6 @@
 package weatherintamriel.api
 
-import retrofit2.Call
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 import weatherintamriel.model.CurrentWeatherResult
@@ -18,8 +18,8 @@ interface WeatherApi {
     }
 
     @GET("forecast/daily?APPID=$APP_ID&mode=$MODE&units=$UNITS&cnt=$COUNT")
-    fun getForecastForZipCode(@Query("zip") zipCode: Int): Call<ForecastRequestResult>
+    fun getForecastForZipCode(@Query("zip") zipCode: Int): Single<ForecastRequestResult>
 
     @GET("weather?APPID=$APP_ID&mode=$MODE&units=$UNITS")
-    fun getCurrentWeatherForZipCode(@Query("zip") zipCode: Int): Call<CurrentWeatherResult>
+    fun getCurrentWeatherForZipCode(@Query("zip") zipCode: Int): Single<CurrentWeatherResult>
 }
