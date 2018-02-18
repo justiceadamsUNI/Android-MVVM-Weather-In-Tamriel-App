@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import weatherintamriel.model.ForecastModel
 import weatherintamriel.model.ForecastRequestResult
 import weatherintamriel.model.ForecastResult
+import weatherintamriel.util.iconCodeToImageUrl
 import java.text.DateFormat
 import java.util.*
 
@@ -27,13 +28,11 @@ class ForecastResultToForecastModelMapper {
                 forecast.weather[0].description,
                 forecast.temp.max,
                 forecast.temp.min,
-                generateIconUrl(forecast.weather[0].icon))
+                iconCodeToImageUrl(forecast.weather[0].icon))
     }
 
     private fun convertDate(date: Long): String {
         val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
         return dateFormat.format(date)
     }
-
-    private fun generateIconUrl(iconCode: String): String = "http://openweathermap.org/img/w/$iconCode.png"
 }
