@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import android.view.animation.AnimationUtils.loadAnimation
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.activity_weather_list.*
 import weatherintamriel.WeatherInTamrielApplication
@@ -14,7 +16,8 @@ import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
-    lateinit var weatherListViewModel: WeatherListViewModel
+    private lateinit var progressSpinner: OuroborosSpinner
+    private lateinit var weatherListViewModel: WeatherListViewModel
 
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
@@ -26,6 +29,7 @@ class WeatherListActivity : AppCompatActivity() {
                 .inject(this)
 
         setContentView(R.layout.activity_weather_list)
+        progressSpinner = findViewById(R.id.progress_spinner)
         forecast_list.layoutManager = LinearLayoutManager(this)
 
         weatherListViewModel =
@@ -40,8 +44,22 @@ class WeatherListActivity : AppCompatActivity() {
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
 
+        weatherListViewState
+                ?.let { setProgressSpinnerVisible(weatherListViewState.showingProgressSpinner) }
+                ?: setProgressSpinnerVisible(false)
+
         controller.setData(
                 weatherListViewState?.forecasts.orEmpty(),
                 weatherListViewState?.currentWeather)
+    }
+
+    private fun setProgressSpinnerVisible(visible: Boolean) {
+        if (!visible) {
+            progressSpinner.clearAnimation()
+            progressSpinner.visibility = View.GONE
+        } else{
+            progressSpinner.startAnimation(loadAnimation(this, R.anim.infinite_spin))
+            progressSpinner.visibility = View.VISIBLE
+        }
     }
 }

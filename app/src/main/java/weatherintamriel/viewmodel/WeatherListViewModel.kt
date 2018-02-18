@@ -3,6 +3,7 @@ package weatherintamriel.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import android.os.Handler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import weatherintamriel.api.WeatherRepository
@@ -20,10 +21,20 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
             = CurrentWeatherResultToCurrentWeatherModelMapper()
 
     init {
-        viewstate.value = WeatherListViewState(forecasts = emptyList(), currentWeather = null)
+        viewstate.value = WeatherListViewState(
+                forecasts = emptyList(),
+                currentWeather = null,
+                showingProgressSpinner = false)
 
-        getForecast()
-        getCurrentWeather()
+        showProgressSpinner()
+
+        // This is here simply to demonstrate ViewModel updates and how they work.
+        // It's also a little less jarring of a UI. If this was a production
+        // application it definitely would not be here.
+        Handler().postDelayed({
+            getForecast()
+            getCurrentWeather()
+        }, 3000)
     }
 
     private fun getForecast(){
@@ -48,11 +59,17 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         //ToDo: wrap mutable live data in a class to ensure that
         // the view state is never null. The current implementation
         // of LiveData is gross and should account for this.
-        viewstate.value = viewstate.value?.copy(forecasts = forecasts)
+        viewstate.value =
+                viewstate.value?.copy(forecasts = forecasts, showingProgressSpinner = false)
     }
 
     fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
-        viewstate.value = viewstate.value?.copy(currentWeather = currentWeather)
+        viewstate.value =
+                viewstate.value?.copy(currentWeather = currentWeather, showingProgressSpinner = false)
+    }
+
+    fun showProgressSpinner() {
+        viewstate.value = viewstate.value?.copy(showingProgressSpinner = true)
     }
 
     class Factory(private val weatherRepository: WeatherRepository): ViewModelProvider.Factory {
