@@ -10,6 +10,7 @@ buildscript {
     ext.ok_http_version = '3.9.1'
     ext.retrofit_version = '2.3.0'
     ext.rx_kotlin_version = '2.2.0'
+    ext.rx_android_version = '2.0.2'
     ext.dagger_version = '2.14.1'
     ext.architecture_components_version = '1.1.0'
 
