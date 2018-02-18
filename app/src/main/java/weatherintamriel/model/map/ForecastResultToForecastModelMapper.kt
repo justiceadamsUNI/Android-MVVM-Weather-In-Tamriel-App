@@ -13,7 +13,10 @@ class ForecastResultToForecastModelMapper {
     fun convertToListOfModels(forecast: ForecastRequestResult): List<ForecastModel> {
         return convertForecastListToDomain(
                 // Api returns Unix_time so we multiply by 1000 to get milliseconds
-                forecast.list.filter { !DateUtils.isToday(it.dt * 1000)})
+                forecast.list.filter {
+                    !Date(it.dt * 1000).before(Date())
+                            && !DateUtils.isToday(it.dt * 1000)
+                })
     }
 
     private fun convertForecastListToDomain(list: List<ForecastResult>): List<ForecastModel> {
