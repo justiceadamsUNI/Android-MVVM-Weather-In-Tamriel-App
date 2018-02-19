@@ -26,14 +26,14 @@
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="@dimen/PrimaryTextSize"
             tools:text="May 14, 2015" />
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Light Rain" />
 
     </LinearLayout>
@@ -48,14 +48,14 @@
             android:id="@+id/maxTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="30" />
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/minTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="15" />
 
     </LinearLayout>

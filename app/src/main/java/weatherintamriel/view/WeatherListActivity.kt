@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
 import justiceadams.com.weatherintamriel.R
@@ -16,9 +15,7 @@ import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
-    private lateinit var progressSpinner: OuroborosSpinner
     private lateinit var weatherListViewModel: WeatherListViewModel
-
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,18 +26,16 @@ class WeatherListActivity : AppCompatActivity() {
                 .inject(this)
 
         setContentView(R.layout.activity_weather_list)
-        progressSpinner = findViewById(R.id.progress_spinner)
-        forecast_list.layoutManager = LinearLayoutManager(this)
 
         weatherListViewModel =
                 ViewModelProviders
                         .of(this, weatherListViewModelFactory)
                         .get(WeatherListViewModel::class.java)
 
-        weatherListViewModel.viewstate.observe(this, Observer(::updateState))
+        weatherListViewModel.viewstate.observe(this, Observer(::renderState))
     }
 
-    private fun updateState(weatherListViewState: WeatherListViewState?){
+    private fun renderState(weatherListViewState: WeatherListViewState?){
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
 
@@ -55,11 +50,11 @@ class WeatherListActivity : AppCompatActivity() {
 
     private fun setProgressSpinnerVisible(visible: Boolean) {
         if (!visible) {
-            progressSpinner.clearAnimation()
-            progressSpinner.visibility = View.GONE
+            progress_spinner.clearAnimation()
+            progress_spinner.visibility = View.GONE
         } else{
-            progressSpinner.startAnimation(loadAnimation(this, R.anim.infinite_spin))
-            progressSpinner.visibility = View.VISIBLE
+            progress_spinner.startAnimation(loadAnimation(this, R.anim.infinite_spin))
+            progress_spinner.visibility = View.VISIBLE
         }
     }
 }

@@ -25,14 +25,14 @@
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="@dimen/PrimaryTextSize"
             tools:text="May 14, 2015"/>
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Light Rain"/>
 
     </LinearLayout>
@@ -49,28 +49,28 @@
             android:id="@+id/current_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Current Temp: -10°"/>
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/max_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Max Temp: -30°"/>
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/min_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Min Temp: -10°"/>
 
         <weatherintamriel.view.PlanewalkerTextView
             android:id="@+id/humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/SecondaryTextSize"
             tools:text="Humidity: -10%"/>
 
     </LinearLayout>
