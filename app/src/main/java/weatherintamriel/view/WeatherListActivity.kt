@@ -4,10 +4,11 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
 import justiceadams.com.weatherintamriel.R
-import kotlinx.android.synthetic.main.activity_weather_list.*
+import kotlinx.android.synthetic.main.weather_list_content.*
 import weatherintamriel.WeatherInTamrielApplication
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import weatherintamriel.viewmodel.WeatherListViewModel
@@ -26,6 +27,7 @@ class WeatherListActivity : AppCompatActivity() {
                 .inject(this)
 
         setContentView(R.layout.activity_weather_list)
+        setUpToolbar()
 
         weatherListViewModel =
                 ViewModelProviders
@@ -56,5 +58,10 @@ class WeatherListActivity : AppCompatActivity() {
             progress_spinner.startAnimation(loadAnimation(this, R.anim.infinite_spin))
             progress_spinner.visibility = View.VISIBLE
         }
+    }
+
+    private fun setUpToolbar() {
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
     }
 }
