@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Weather In Tamriel</string>
+    <string name="enter_zip_code_prompt">Enter your zip code to see the weather in your province</string>
 </resources>

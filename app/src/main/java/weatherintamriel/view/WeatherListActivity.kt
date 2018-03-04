@@ -1,10 +1,15 @@
 package weatherintamriel.view
 
+import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
 import justiceadams.com.weatherintamriel.R
@@ -60,8 +65,43 @@ class WeatherListActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.set_zip_code -> {
+            showZipCodeEntryDialog()
+        }
+
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun setUpToolbar() {
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+    }
+
+    private fun showZipCodeEntryDialog(): Boolean {
+        val dialog = AlertDialog.Builder(this)
+                .setView(R.layout.dialog_set_zip_code)
+                .setPositiveButton("Done", { dialog, _ ->
+                    // ToDo: handle this case.
+                })
+                .setNegativeButton("Cancel", { dialog, _ ->
+                    dialog.dismiss()
+                })
+                .create()
+
+        dialog.show()
+
+        val typeface = Typeface.createFromAsset(assets, "fonts/Planewalker.otf")
+        dialog.getButton(Dialog.BUTTON_POSITIVE).typeface = typeface
+        dialog.getButton(Dialog.BUTTON_NEGATIVE).typeface = typeface
+        return true
     }
 }

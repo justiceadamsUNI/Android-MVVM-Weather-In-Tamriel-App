@@ -6,4 +6,6 @@
     <color name="weatherListBackground">#F6F5F5</color>
     <color name="toolbarColor">@android:color/black</color>
     <color name="toolbarTextColor">@android:color/white</color>
+    <color name="dialog_background_color">@android:color/white</color>
+    <color name="dialog_primary_color">@android:color/black</color>
 </resources>
