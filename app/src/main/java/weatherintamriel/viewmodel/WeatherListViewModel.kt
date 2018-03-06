@@ -24,21 +24,25 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         viewstate.value = WeatherListViewState(
                 forecasts = emptyList(),
                 currentWeather = null,
-                showingProgressSpinner = false)
+                showingProgressSpinner = false,
+                zipCode = null)
+    }
+
+    fun updateZipCode(zipCode: Int) {
+        viewstate.value = viewstate.value?.copy(zipCode = zipCode)
 
         showProgressSpinner()
-
         // This is here simply to demonstrate ViewModel updates and how they work.
         // It's also a little less jarring of a UI. If this was a production
         // application it definitely would not be here.
         Handler().postDelayed({
-            getForecast()
-            getCurrentWeather()
+            getForecast(zipCode)
+            getCurrentWeather(zipCode)
         }, 3000)
     }
 
-    private fun getForecast(){
-        weatherRepository.getForecasts()
+    private fun getForecast(zipCode: Int){
+        weatherRepository.getForecasts(zipCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map<List<ForecastModel>> {
@@ -47,15 +51,15 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .subscribe(::showForecasts)
     }
 
-    private fun getCurrentWeather(){
-        weatherRepository.getCurrentWeather()
+    private fun getCurrentWeather(zipCode: Int){
+        weatherRepository.getCurrentWeather(zipCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { currentWeatherResultToCurrentWeatherModelMapper.convertToModel(it) }
                 .subscribe(::showCurrentWeather)
     }
 
-    fun showForecasts(forecasts: List<ForecastModel>) {
+    private fun showForecasts(forecasts: List<ForecastModel>) {
         //ToDo: wrap mutable live data in a class to ensure that
         // the view state is never null. The current implementation
         // of LiveData is gross and should account for this.
@@ -63,12 +67,12 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 viewstate.value?.copy(forecasts = forecasts, showingProgressSpinner = false)
     }
 
-    fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
+    private fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
         viewstate.value =
                 viewstate.value?.copy(currentWeather = currentWeather, showingProgressSpinner = false)
     }
 
-    fun showProgressSpinner() {
+    private fun showProgressSpinner() {
         viewstate.value = viewstate.value?.copy(showingProgressSpinner = true)
     }
 

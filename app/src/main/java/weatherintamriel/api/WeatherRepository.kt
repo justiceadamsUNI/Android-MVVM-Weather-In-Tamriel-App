@@ -9,9 +9,9 @@ import javax.inject.Singleton
 @Singleton
 class WeatherRepository @Inject constructor(private var weatherApi: WeatherApi) {
 
-    fun getForecasts(): Single<ForecastRequestResult> =
-            weatherApi.getForecastForZipCode(50613) //ToDo: Make this dynamic
+    fun getForecasts(zipCode: Int): Single<ForecastRequestResult> =
+            weatherApi.getForecastForZipCode(zipCode)
 
-    fun getCurrentWeather(): Single<CurrentWeatherResult> =
-            weatherApi.getCurrentWeatherForZipCode(50613) // ToDo: make this dynamic
+    fun getCurrentWeather(zipCode: Int): Single<CurrentWeatherResult> =
+            weatherApi.getCurrentWeatherForZipCode(zipCode)
 }
