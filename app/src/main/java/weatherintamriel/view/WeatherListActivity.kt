@@ -5,16 +5,18 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
+import android.widget.EditText
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.weather_list_content.*
 import weatherintamriel.WeatherInTamrielApplication
+import weatherintamriel.util.onTextChanged
+import weatherintamriel.view.dialog.ZipCodeEntryDialogBuilder
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import weatherintamriel.viewmodel.WeatherListViewModel
 import weatherintamriel.viewmodel.WeatherListViewState
@@ -42,13 +44,21 @@ class WeatherListActivity : AppCompatActivity() {
         weatherListViewModel.viewstate.observe(this, Observer(::renderState))
     }
 
-    private fun renderState(weatherListViewState: WeatherListViewState?){
+    private fun renderState(weatherListViewState: WeatherListViewState?) {
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
+
+        weatherListViewState?.let {
+            if(weatherListViewState.zipCode == null) showZipCodeEntryDialog()
+        }
 
         weatherListViewState
                 ?.let { setProgressSpinnerVisible(weatherListViewState.showingProgressSpinner) }
                 ?: setProgressSpinnerVisible(false)
+
+        weatherListViewState
+                ?.let { setWeatherDataVisible(!weatherListViewState.showingProgressSpinner) }
+                ?: setWeatherDataVisible(false)
 
         controller.setData(
                 weatherListViewState?.forecasts.orEmpty(),
@@ -59,9 +69,17 @@ class WeatherListActivity : AppCompatActivity() {
         if (!visible) {
             progress_spinner.clearAnimation()
             progress_spinner.visibility = View.GONE
-        } else{
+        } else {
             progress_spinner.startAnimation(loadAnimation(this, R.anim.infinite_spin))
             progress_spinner.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setWeatherDataVisible(visible: Boolean) {
+        if (!visible) {
+            forecast_list.visibility = View.GONE
+        } else {
+            forecast_list.visibility = View.VISIBLE
         }
     }
 
@@ -87,21 +105,21 @@ class WeatherListActivity : AppCompatActivity() {
     }
 
     private fun showZipCodeEntryDialog(): Boolean {
-        val dialog = AlertDialog.Builder(this)
-                .setView(R.layout.dialog_set_zip_code)
-                .setPositiveButton("Done", { dialog, _ ->
-                    // ToDo: handle this case.
-                })
-                .setNegativeButton("Cancel", { dialog, _ ->
-                    dialog.dismiss()
-                })
-                .create()
+        val dialog = ZipCodeEntryDialogBuilder(this)
+                .createAlertDialogWithActionOnZipCodeEntry(weatherListViewModel::updateZipCode)
 
         dialog.show()
+        val positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE)
+        val negativeButton = dialog.getButton(Dialog.BUTTON_NEGATIVE)
+
+        positiveButton.isEnabled = false
+        dialog.findViewById<EditText>(R.id.zip_code)?.onTextChanged { zipCode ->
+                    positiveButton.isEnabled = !zipCode.isEmpty()
+                }
 
         val typeface = Typeface.createFromAsset(assets, "fonts/Planewalker.otf")
-        dialog.getButton(Dialog.BUTTON_POSITIVE).typeface = typeface
-        dialog.getButton(Dialog.BUTTON_NEGATIVE).typeface = typeface
+        positiveButton.typeface = typeface
+        negativeButton.typeface = typeface
         return true
     }
 }
