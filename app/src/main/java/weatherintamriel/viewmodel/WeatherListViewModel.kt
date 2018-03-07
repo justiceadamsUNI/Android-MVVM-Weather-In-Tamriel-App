@@ -25,11 +25,12 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 forecasts = emptyList(),
                 currentWeather = null,
                 showingProgressSpinner = false,
-                zipCode = null)
+                zipCode = null,
+                showErrorDialog = false)
     }
 
     fun updateZipCode(zipCode: Int) {
-        viewstate.value = viewstate.value?.copy(zipCode = zipCode)
+        viewstate.value = viewstate.value?.copy(zipCode = zipCode, showErrorDialog = false)
 
         showProgressSpinner()
         // This is here simply to demonstrate ViewModel updates and how they work.
@@ -48,7 +49,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .map<List<ForecastModel>> {
                     forecastResultToForecastModelMapper.convertToListOfModels(it)
                 }
-                .subscribe(::showForecasts)
+                .subscribe(::showForecasts, ::showErrorDialog)
     }
 
     private fun getCurrentWeather(zipCode: Int){
@@ -56,7 +57,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { currentWeatherResultToCurrentWeatherModelMapper.convertToModel(it) }
-                .subscribe(::showCurrentWeather)
+                .subscribe(::showCurrentWeather, {})
     }
 
     private fun showForecasts(forecasts: List<ForecastModel>) {
@@ -69,11 +70,26 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
 
     private fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
         viewstate.value =
-                viewstate.value?.copy(currentWeather = currentWeather, showingProgressSpinner = false)
+                viewstate.value?.copy(
+                        currentWeather = currentWeather,
+                        showingProgressSpinner = false)
     }
 
     private fun showProgressSpinner() {
         viewstate.value = viewstate.value?.copy(showingProgressSpinner = true)
+    }
+
+    private fun showErrorDialog(throwable: Throwable) {
+        // Reset all data on error and show the error prompt (if it's not already showing)
+        val finalViewState = viewstate.value
+
+        finalViewState?.let { if (!finalViewState.showErrorDialog)
+            viewstate.value = WeatherListViewState(
+                forecasts = emptyList(),
+                currentWeather = null,
+                showingProgressSpinner = false,
+                zipCode = null,
+                showErrorDialog = true)}
     }
 
     class Factory(private val weatherRepository: WeatherRepository): ViewModelProvider.Factory {
