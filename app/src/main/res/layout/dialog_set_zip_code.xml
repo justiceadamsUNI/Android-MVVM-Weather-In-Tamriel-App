@@ -12,6 +12,7 @@
         android:contentDescription="@string/app_name" >
 
         <weatherintamriel.view.PlanewalkerTextView
+            android:id="@+id/dialog_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dip"
@@ -24,7 +25,8 @@
 
     <EditText
         android:id="@+id/zip_code"
-        android:inputType="numberDecimal"
+        android:inputType="number"
+        android:maxLength="9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

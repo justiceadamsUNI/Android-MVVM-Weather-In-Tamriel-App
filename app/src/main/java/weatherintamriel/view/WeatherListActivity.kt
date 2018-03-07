@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -12,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.EditText
+import android.widget.TextView
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.weather_list_content.*
 import weatherintamriel.WeatherInTamrielApplication
@@ -49,7 +51,11 @@ class WeatherListActivity : AppCompatActivity() {
         forecast_list.adapter = controller.adapter
 
         weatherListViewState?.let {
-            if(weatherListViewState.zipCode == null) showZipCodeEntryDialog()
+            if(weatherListViewState.zipCode == null)
+                showZipCodeEntryDialog(
+                        if (weatherListViewState.showErrorDialog)
+                            R.string.error_finding_zip_code_prompt else
+                            R.string.enter_zip_code_prompt)
         }
 
         weatherListViewState
@@ -91,7 +97,7 @@ class WeatherListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.set_zip_code -> {
-            showZipCodeEntryDialog()
+            showZipCodeEntryDialog(R.string.enter_zip_code_prompt)
         }
 
         else -> {
@@ -104,7 +110,7 @@ class WeatherListActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
     }
 
-    private fun showZipCodeEntryDialog(): Boolean {
+    private fun showZipCodeEntryDialog(@StringRes dialogMessage: Int): Boolean {
         val dialog = ZipCodeEntryDialogBuilder(this)
                 .createAlertDialogWithActionOnZipCodeEntry(weatherListViewModel::updateZipCode)
 
@@ -116,6 +122,8 @@ class WeatherListActivity : AppCompatActivity() {
         dialog.findViewById<EditText>(R.id.zip_code)?.onTextChanged { zipCode ->
                     positiveButton.isEnabled = !zipCode.isEmpty()
                 }
+
+        dialog.findViewById<TextView>(R.id.dialog_message)?.text = getString(dialogMessage)
 
         val typeface = Typeface.createFromAsset(assets, "fonts/Planewalker.otf")
         positiveButton.typeface = typeface
