@@ -1,6 +1,7 @@
-package weatherintamriel.api
+package weatherintamriel.api.repository
 
 import io.reactivex.Single
+import weatherintamriel.api.WeatherApi
 import weatherintamriel.model.CurrentWeatherResult
 import weatherintamriel.model.ForecastRequestResult
 import javax.inject.Inject

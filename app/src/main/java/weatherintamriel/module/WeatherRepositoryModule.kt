@@ -3,7 +3,7 @@ package weatherintamriel.module
 import dagger.Module
 import dagger.Provides
 import weatherintamriel.api.WeatherApi
-import weatherintamriel.api.WeatherRepository
+import weatherintamriel.api.repository.WeatherRepository
 import javax.inject.Singleton
 
 @Module
