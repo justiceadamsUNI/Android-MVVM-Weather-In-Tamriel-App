@@ -18,6 +18,8 @@ import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.weather_list_content.*
 import weatherintamriel.WeatherInTamrielApplication
 import weatherintamriel.util.onTextChanged
+import weatherintamriel.util.readZipCodeFromSharedPreferences
+import weatherintamriel.util.writeZipCodeIntoSharedPreferences
 import weatherintamriel.view.dialog.ZipCodeEntryDialogBuilder
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import weatherintamriel.viewmodel.WeatherListViewModel
@@ -25,6 +27,7 @@ import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
+    private var readSharedPreferences: Boolean = false
     private lateinit var weatherListViewModel: WeatherListViewModel
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
@@ -43,6 +46,10 @@ class WeatherListActivity : AppCompatActivity() {
                         .of(this, weatherListViewModelFactory)
                         .get(WeatherListViewModel::class.java)
 
+        weatherListViewModel.setOnZipcodeSuccessfullyUpdatedListener {
+            writeZipCodeIntoSharedPreferences(it)
+        }
+
         weatherListViewModel.viewstate.observe(this, Observer(::renderState))
     }
 
@@ -51,11 +58,13 @@ class WeatherListActivity : AppCompatActivity() {
         forecast_list.adapter = controller.adapter
 
         weatherListViewState?.let {
-            if(weatherListViewState.zipCode == null)
-                showZipCodeEntryDialog(
+            if(weatherListViewState.zipCode == null) {
+                if (!readSharedPreferences) determineAndShowStartupState()
+                else showZipCodeEntryDialog(
                         if (weatherListViewState.showErrorDialog)
                             R.string.error_finding_zip_code_prompt else
                             R.string.enter_zip_code_prompt)
+            }
         }
 
         weatherListViewState
@@ -87,6 +96,14 @@ class WeatherListActivity : AppCompatActivity() {
         } else {
             forecast_list.visibility = View.VISIBLE
         }
+    }
+
+    private fun determineAndShowStartupState() {
+        val zipCode = readZipCodeFromSharedPreferences()
+        zipCode?.let { weatherListViewModel.updateZipCode(zipCode) }
+                ?: showZipCodeEntryDialog(R.string.enter_zip_code_prompt)
+
+        readSharedPreferences = true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

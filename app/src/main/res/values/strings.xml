@@ -2,4 +2,5 @@
     <string name="app_name">Weather In Tamriel</string>
     <string name="enter_zip_code_prompt">Enter your zip code to see the weather in your province</string>
     <string name="error_finding_zip_code_prompt">By The Nine, Your province could not be located. Please re-enter your zip code</string>
+    <string name="shared_preference_zip_key">zip-code-key</string>
 </resources>

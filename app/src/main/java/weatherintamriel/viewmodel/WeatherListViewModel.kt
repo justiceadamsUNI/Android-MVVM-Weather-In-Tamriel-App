@@ -16,6 +16,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         ViewModel() {
 
     val viewstate = MutableLiveData<WeatherListViewState>()
+    private var onZipcodeSuccessfullyUpdatedListener: (zipCode: Int) -> Unit = {}
     private val forecastResultToForecastModelMapper = ForecastResultToForecastModelMapper()
     private val currentWeatherResultToCurrentWeatherModelMapper
             = CurrentWeatherResultToCurrentWeatherModelMapper()
@@ -42,6 +43,10 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         }, 3000)
     }
 
+    fun setOnZipcodeSuccessfullyUpdatedListener(onZipCodeEntered: (zipCode: Int) -> Unit) {
+        onZipcodeSuccessfullyUpdatedListener = onZipCodeEntered
+    }
+
     private fun getForecast(zipCode: Int){
         weatherRepository.getForecasts(zipCode)
                 .subscribeOn(Schedulers.io())
@@ -49,6 +54,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .map<List<ForecastModel>> {
                     forecastResultToForecastModelMapper.convertToListOfModels(it)
                 }
+                .doOnSuccess { onZipcodeSuccessfullyUpdatedListener.invoke(zipCode) }
                 .subscribe(::showForecasts, ::showErrorDialog)
     }
 
@@ -57,7 +63,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { currentWeatherResultToCurrentWeatherModelMapper.convertToModel(it) }
-                .subscribe(::showCurrentWeather, {})
+                .subscribe(::showCurrentWeather, {}) //NoOps on error. Already handled.
     }
 
     private fun showForecasts(forecasts: List<ForecastModel>) {
