@@ -2,15 +2,15 @@ package weatherintamriel.model
 
 data class ForecastModel(val date: String,
                          val description: String,
-                         val high: Float,
-                         val low: Float,
+                         val high: Int,
+                         val low: Int,
                          val iconUrl: String)
 
 data class CurrentWeatherModel(val date: String,
                                val description: String,
-                               val temp: Float,
-                               val temp_min: Float,
-                               val temp_max: Float,
+                               val temp: Int,
+                               val temp_min: Int,
+                               val temp_max: Int,
                                val humidity: Int,
                                val iconUrl: String)
 

@@ -29,8 +29,8 @@ class ForecastResultToForecastModelMapper {
         return ForecastModel(
                 convertDateToTamrielDate(forecast.dt),
                 forecast.weather[0].description,
-                forecast.temp.max,
-                forecast.temp.min,
+                forecast.temp.max.toInt(),
+                forecast.temp.min.toInt(),
                 iconCodeToImageUrl(forecast.weather[0].icon))
     }
 }

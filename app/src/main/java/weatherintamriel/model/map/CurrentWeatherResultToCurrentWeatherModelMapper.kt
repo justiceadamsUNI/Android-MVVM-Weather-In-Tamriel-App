@@ -13,9 +13,9 @@ class CurrentWeatherResultToCurrentWeatherModelMapper {
         return CurrentWeatherModel(
                 convertDateToTamrielDate(weather.dt),
                 weatherResult.description,
-                weather.main.temp,
-                weather.main.temp_min,
-                weather.main.temp_max,
+                weather.main.temp.toInt(),
+                weather.main.temp_min.toInt(),
+                weather.main.temp_max.toInt(),
                 weather.main.humidity,
                 iconCodeToImageUrl(weatherResult.icon))
     }
