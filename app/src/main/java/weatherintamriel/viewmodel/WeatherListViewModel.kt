@@ -21,7 +21,8 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository,
 
     val viewstate = NullSafeMutableLiveData<WeatherListViewState>()
     private var onZipcodeSuccessfullyUpdatedListener: (zipCode: Int) -> Unit = {}
-    private val forecastResultToForecastModelMapper = ForecastResultToForecastModelMapper()
+    private val forecastResultToForecastModelMapper =
+            ForecastResultToForecastModelMapper()
     private val currentWeatherResultToCurrentWeatherModelMapper =
             CurrentWeatherResultToCurrentWeatherModelMapper()
     private val zipCodeLocationToLocationInfoModelMapper =
@@ -46,14 +47,15 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository,
                 locationInfo = null)
 
         showProgressSpinner()
-        // This is here simply to demonstrate ViewModel updates and how they work.
+
+        // This delay is here simply to demonstrate ViewModel updates and how they work.
         // It's also a little less jarring of a UI. If this was a production
         // application it definitely would not be here.
         Handler().postDelayed({
             getForecast(zipCode)
             getCurrentWeather(zipCode)
             getZipCodeLocationInfo(zipCode)
-        }, 3000)
+        }, 1000)
     }
 
     fun setOnZipcodeSuccessfullyUpdatedListener(onZipCodeEntered: (zipCode: Int) -> Unit) {
@@ -94,8 +96,8 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository,
     private fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
         viewstate.value =
                 viewstate.value.copy(
-                currentWeather = currentWeather,
-                showingProgressSpinner = false
+                        currentWeather = currentWeather,
+                        showingProgressSpinner = false
         )
     }
 

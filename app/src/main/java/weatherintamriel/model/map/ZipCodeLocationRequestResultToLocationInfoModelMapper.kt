@@ -4,6 +4,7 @@ import weatherintamriel.model.LocationInfoModel
 import weatherintamriel.model.ZipCodeLocationInformationRequestResult
 
 class ZipCodeLocationRequestResultToLocationInfoModelMapper {
+
     fun convertToModel(zipCodeLocationInformationRequestResult:
                        ZipCodeLocationInformationRequestResult): LocationInfoModel {
 

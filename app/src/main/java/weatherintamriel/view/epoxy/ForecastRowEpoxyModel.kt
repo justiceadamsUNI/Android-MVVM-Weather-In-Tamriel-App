@@ -11,6 +11,7 @@ import weatherintamriel.model.ForecastModel
 
 class ForecastRowEpoxyModel(private val forecast: ForecastModel)
     : EpoxyModelWithHolder<ViewHolder>() {
+
     override fun getDefaultLayout() = R.layout.row_regular_forecast_item
 
     override fun createNewHolder() = ViewHolder()

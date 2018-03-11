@@ -55,9 +55,6 @@ class WeatherListActivity : AppCompatActivity() {
     }
 
     private fun renderState(weatherListViewState: WeatherListViewState) {
-        val controller = WeatherListEpoxyController()
-        forecast_list.adapter = controller.adapter
-
         if(weatherListViewState.zipCode == null) {
             if (weatherListViewState.initialState) determineAndShowStartupState()
             else showZipCodeEntryDialog(
@@ -74,6 +71,8 @@ class WeatherListActivity : AppCompatActivity() {
 
         weatherListViewState.locationInfo?.let{ showToastWithLocationInfo(it) }
 
+        val controller = WeatherListEpoxyController()
+        forecast_list.adapter = controller.adapter
         controller.setData(weatherListViewState.forecasts, weatherListViewState.currentWeather)
     }
 
@@ -107,9 +106,23 @@ class WeatherListActivity : AppCompatActivity() {
                 .show()
     }
 
+    private fun showZipCodeMenuItemEnabled(enableUpdateZipCodeItem: Boolean) {
+        updateZipCodeMenuItemEnabled = enableUpdateZipCodeItem
+        invalidateOptionsMenu()
+    }
+
+    private fun setUpToolbar() {
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.toolbar_menu, menu)
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.getItem(0)?.isEnabled = updateZipCodeMenuItemEnabled
         return true
     }
 
@@ -121,21 +134,6 @@ class WeatherListActivity : AppCompatActivity() {
         else -> {
             super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun showZipCodeMenuItemEnabled(enableUpdateZipCodeItem: Boolean) {
-        updateZipCodeMenuItemEnabled = enableUpdateZipCodeItem
-        invalidateOptionsMenu()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.getItem(0)?.isEnabled = updateZipCodeMenuItemEnabled
-        return true
-    }
-
-    private fun setUpToolbar() {
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
     }
 
     private fun showZipCodeEntryDialog(@StringRes dialogMessage: Int): Boolean {

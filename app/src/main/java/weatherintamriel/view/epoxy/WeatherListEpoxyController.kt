@@ -19,8 +19,8 @@ class WeatherListEpoxyController: EpoxyController() {
     override fun buildModels() {
         //The id is the date since we only display one model per day!
         val currentWeather = this.currentWeather
-        currentWeather?.let { add(CurrentWeatherEpoxyModel(currentWeather).apply { id(it.date) }) }
 
+        currentWeather?.let { add(CurrentWeatherEpoxyModel(currentWeather).apply { id(it.date) }) }
         add(forecastList.map { ForecastRowEpoxyModel(it).apply { id(it.date) } })
     }
 }

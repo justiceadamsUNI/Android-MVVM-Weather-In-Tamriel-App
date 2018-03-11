@@ -11,6 +11,7 @@ import weatherintamriel.model.CurrentWeatherModel
 
 class CurrentWeatherEpoxyModel(private val weather: CurrentWeatherModel)
     : EpoxyModelWithHolder<CurrentWeatherViewHolder>() {
+
     override fun getDefaultLayout() = R.layout.row_current_weather
 
     override fun createNewHolder() = CurrentWeatherViewHolder()

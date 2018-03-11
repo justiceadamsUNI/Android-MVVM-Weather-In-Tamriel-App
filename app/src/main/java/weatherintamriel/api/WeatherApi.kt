@@ -7,7 +7,6 @@ import weatherintamriel.model.CurrentWeatherResult
 import weatherintamriel.model.ForecastRequestResult
 import javax.inject.Singleton
 
-
 @Singleton
 interface WeatherApi {
     companion object {

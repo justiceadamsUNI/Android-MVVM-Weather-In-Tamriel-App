@@ -13,9 +13,9 @@ class WeatherListViewModelFactoryModule {
     @Provides
     @Singleton
     fun provideWeatherListViewModelFactory(weatherRepository: WeatherRepository,
-                                           zipCodeInformationRepository: ZipCodeInformationRepository)
-            = WeatherListViewModel.Factory(
-            weatherRepository = weatherRepository,
-            zipCodeInformationRepository = zipCodeInformationRepository
+                                           zipCodeInformationRepository: ZipCodeInformationRepository) =
+            WeatherListViewModel.Factory(
+                    weatherRepository = weatherRepository,
+                    zipCodeInformationRepository = zipCodeInformationRepository
     )
 }
