@@ -1,7 +1,6 @@
 package weatherintamriel.view
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
@@ -25,6 +24,7 @@ import weatherintamriel.view.dialog.ZipCodeEntryDialogBuilder
 import weatherintamriel.view.epoxy.WeatherListEpoxyController
 import weatherintamriel.viewmodel.WeatherListViewModel
 import weatherintamriel.viewmodel.WeatherListViewState
+import weatherintamriel.viewmodel.architecture.NullSafeObserver
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
@@ -51,41 +51,30 @@ class WeatherListActivity : AppCompatActivity() {
             writeZipCodeIntoSharedPreferences(it)
         }
 
-        weatherListViewModel.viewstate.observe(this, Observer(::renderState))
+        weatherListViewModel.viewstate.observe(this, NullSafeObserver(::renderState))
     }
 
-    private fun renderState(weatherListViewState: WeatherListViewState?) {
+    private fun renderState(weatherListViewState: WeatherListViewState) {
         val controller = WeatherListEpoxyController()
         forecast_list.adapter = controller.adapter
 
-        weatherListViewState?.let {
-            if(weatherListViewState.zipCode == null) {
-                if (weatherListViewState.initialState) determineAndShowStartupState()
-                else showZipCodeEntryDialog(
-                        if (weatherListViewState.showErrorDialog)
-                            R.string.error_finding_zip_code_prompt else
-                            R.string.enter_zip_code_prompt)
-            }
+        if(weatherListViewState.zipCode == null) {
+            if (weatherListViewState.initialState) determineAndShowStartupState()
+            else showZipCodeEntryDialog(
+                    if (weatherListViewState.showErrorDialog)
+                        R.string.error_finding_zip_code_prompt else
+                        R.string.enter_zip_code_prompt)
         }
 
-        weatherListViewState
-                ?.let { setProgressSpinnerVisible(weatherListViewState.showingProgressSpinner) }
-                ?: setProgressSpinnerVisible(false)
+        setProgressSpinnerVisible(weatherListViewState.showingProgressSpinner)
 
-        weatherListViewState
-                ?.let { setWeatherDataVisible(!weatherListViewState.showingProgressSpinner) }
-                ?: setWeatherDataVisible(false)
+        setWeatherDataVisible(!weatherListViewState.showingProgressSpinner)
 
-        weatherListViewState?.let {
-            showZipCodeMenuItemEnabled(!weatherListViewState.showingProgressSpinner)
-        }
+        showZipCodeMenuItemEnabled(!weatherListViewState.showingProgressSpinner)
 
-        weatherListViewState
-                ?.let { weatherListViewState.locationInfo?.let{ showToastWithLocationInfo(it)} }
+        weatherListViewState.locationInfo?.let{ showToastWithLocationInfo(it) }
 
-        controller.setData(
-                weatherListViewState?.forecasts.orEmpty(),
-                weatherListViewState?.currentWeather)
+        controller.setData(weatherListViewState.forecasts, weatherListViewState.currentWeather)
     }
 
     private fun setProgressSpinnerVisible(visible: Boolean) {
@@ -134,7 +123,7 @@ class WeatherListActivity : AppCompatActivity() {
         }
     }
 
-    fun showZipCodeMenuItemEnabled(enableUpdateZipCodeItem: Boolean) {
+    private fun showZipCodeMenuItemEnabled(enableUpdateZipCodeItem: Boolean) {
         updateZipCodeMenuItemEnabled = enableUpdateZipCodeItem
         invalidateOptionsMenu()
     }

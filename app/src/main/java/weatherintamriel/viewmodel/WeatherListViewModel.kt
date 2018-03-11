@@ -1,6 +1,5 @@
 package weatherintamriel.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.os.Handler
@@ -14,12 +13,13 @@ import weatherintamriel.model.LocationInfoModel
 import weatherintamriel.model.map.CurrentWeatherResultToCurrentWeatherModelMapper
 import weatherintamriel.model.map.ForecastResultToForecastModelMapper
 import weatherintamriel.model.map.ZipCodeLocationRequestResultToLocationInfoModelMapper
+import weatherintamriel.viewmodel.architecture.NullSafeMutableLiveData
 
 class WeatherListViewModel(private val weatherRepository: WeatherRepository,
                            private val zipCodeInformationRepository: ZipCodeInformationRepository)
     : ViewModel() {
 
-    val viewstate = MutableLiveData<WeatherListViewState>()
+    val viewstate = NullSafeMutableLiveData<WeatherListViewState>()
     private var onZipcodeSuccessfullyUpdatedListener: (zipCode: Int) -> Unit = {}
     private val forecastResultToForecastModelMapper = ForecastResultToForecastModelMapper()
     private val currentWeatherResultToCurrentWeatherModelMapper =
@@ -39,7 +39,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository,
     }
 
     fun updateZipCode(zipCode: Int) {
-        viewstate.value = viewstate.value?.copy(
+        viewstate.value = viewstate.value.copy(
                 zipCode = zipCode,
                 initialState = false,
                 showErrorDialog = false,
@@ -87,41 +87,36 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository,
     }
 
     private fun showForecasts(forecasts: List<ForecastModel>) {
-        //ToDo: wrap mutable live data in a class to ensure that
-        // the view state is never null. The current implementation
-        // of LiveData is gross and should account for this.
         viewstate.value =
-                viewstate.value?.copy(forecasts = forecasts, showingProgressSpinner = false)
+                viewstate.value.copy(forecasts = forecasts, showingProgressSpinner = false)
     }
 
     private fun showCurrentWeather(currentWeather: CurrentWeatherModel) {
         viewstate.value =
-                viewstate.value?.copy(
-                        currentWeather = currentWeather,
-                        showingProgressSpinner = false)
+                viewstate.value.copy(
+                currentWeather = currentWeather,
+                showingProgressSpinner = false
+        )
     }
 
     private fun showProgressSpinner() {
-        viewstate.value = viewstate.value?.copy(showingProgressSpinner = true)
+        viewstate.value = viewstate.value.copy(showingProgressSpinner = true)
     }
 
     private fun showLocationInfo(locationInfoModel: LocationInfoModel) {
-        viewstate.value = viewstate.value?.copy(locationInfo = locationInfoModel.locationInfo)
+        viewstate.value = viewstate.value.copy(locationInfo = locationInfoModel.locationInfo)
     }
 
     private fun showErrorDialog(throwable: Throwable) {
         // Reset all data on error and show the error prompt (if it's not already showing)
-        val finalViewState = viewstate.value
-
-        finalViewState?.let {
-            if (!finalViewState.showErrorDialog)
-                viewstate.value = viewstate.value?.copy(
-                        forecasts = emptyList(),
-                        currentWeather = null,
-                        showingProgressSpinner = false,
-                        zipCode = null,
-                        locationInfo = null,
-                        showErrorDialog = true) }
+        if (!viewstate.value.showErrorDialog)
+            viewstate.value = viewstate.value.copy(
+                    forecasts = emptyList(),
+                    currentWeather = null,
+                    showingProgressSpinner = false,
+                    zipCode = null,
+                    locationInfo = null,
+                    showErrorDialog = true)
     }
 
     class Factory(private val weatherRepository: WeatherRepository,
