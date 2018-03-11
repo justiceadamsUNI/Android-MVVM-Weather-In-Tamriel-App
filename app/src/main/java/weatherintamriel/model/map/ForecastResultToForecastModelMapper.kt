@@ -4,8 +4,8 @@ import android.text.format.DateUtils
 import weatherintamriel.model.ForecastModel
 import weatherintamriel.model.ForecastRequestResult
 import weatherintamriel.model.ForecastResult
+import weatherintamriel.util.convertDateToTamrielDate
 import weatherintamriel.util.iconCodeToImageUrl
-import java.text.DateFormat
 import java.util.*
 
 class ForecastResultToForecastModelMapper {
@@ -21,21 +21,16 @@ class ForecastResultToForecastModelMapper {
 
     private fun convertForecastListToDomain(list: List<ForecastResult>): List<ForecastModel> {
         return list.map { forecast ->
-            convertForecastItemToDomain(forecast.copy(dt = forecast.dt * 1000))
+            convertForecastItemToDomain(forecast)
         }
     }
 
     private fun convertForecastItemToDomain(forecast: ForecastResult): ForecastModel {
         return ForecastModel(
-                convertDate(forecast.dt),
+                convertDateToTamrielDate(forecast.dt),
                 forecast.weather[0].description,
                 forecast.temp.max,
                 forecast.temp.min,
                 iconCodeToImageUrl(forecast.weather[0].icon))
-    }
-
-    private fun convertDate(date: Long): String {
-        val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-        return dateFormat.format(date)
     }
 }

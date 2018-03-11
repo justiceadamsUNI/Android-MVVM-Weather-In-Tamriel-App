@@ -9,7 +9,8 @@ import com.squareup.picasso.Picasso
 import justiceadams.com.weatherintamriel.R
 import weatherintamriel.model.CurrentWeatherModel
 
-data class CurrentWeatherEpoxyModel(private val weather: CurrentWeatherModel) : EpoxyModelWithHolder<CurrentWeatherViewHolder>() {
+class CurrentWeatherEpoxyModel(private val weather: CurrentWeatherModel)
+    : EpoxyModelWithHolder<CurrentWeatherViewHolder>() {
     override fun getDefaultLayout() = R.layout.row_current_weather
 
     override fun createNewHolder() = CurrentWeatherViewHolder()
