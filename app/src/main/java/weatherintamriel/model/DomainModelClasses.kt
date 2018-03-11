@@ -13,3 +13,5 @@ data class CurrentWeatherModel(val date: String,
                                val temp_max: Float,
                                val humidity: Int,
                                val iconUrl: String)
+
+data class LocationInfoModel(val locationInfo: String)

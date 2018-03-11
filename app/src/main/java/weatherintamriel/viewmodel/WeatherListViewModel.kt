@@ -6,32 +6,44 @@ import android.arch.lifecycle.ViewModelProvider
 import android.os.Handler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import weatherintamriel.api.WeatherRepository
+import weatherintamriel.api.repository.WeatherRepository
+import weatherintamriel.api.repository.ZipCodeInformationRepository
 import weatherintamriel.model.CurrentWeatherModel
 import weatherintamriel.model.ForecastModel
+import weatherintamriel.model.LocationInfoModel
 import weatherintamriel.model.map.CurrentWeatherResultToCurrentWeatherModelMapper
 import weatherintamriel.model.map.ForecastResultToForecastModelMapper
+import weatherintamriel.model.map.ZipCodeLocationRequestResultToLocationInfoModelMapper
 
-class WeatherListViewModel(private val weatherRepository: WeatherRepository):
-        ViewModel() {
+class WeatherListViewModel(private val weatherRepository: WeatherRepository,
+                           private val zipCodeInformationRepository: ZipCodeInformationRepository)
+    : ViewModel() {
 
     val viewstate = MutableLiveData<WeatherListViewState>()
     private var onZipcodeSuccessfullyUpdatedListener: (zipCode: Int) -> Unit = {}
     private val forecastResultToForecastModelMapper = ForecastResultToForecastModelMapper()
-    private val currentWeatherResultToCurrentWeatherModelMapper
-            = CurrentWeatherResultToCurrentWeatherModelMapper()
+    private val currentWeatherResultToCurrentWeatherModelMapper =
+            CurrentWeatherResultToCurrentWeatherModelMapper()
+    private val zipCodeLocationToLocationInfoModelMapper =
+            ZipCodeLocationRequestResultToLocationInfoModelMapper()
 
     init {
         viewstate.value = WeatherListViewState(
+                initialState = true,
                 forecasts = emptyList(),
                 currentWeather = null,
                 showingProgressSpinner = false,
                 zipCode = null,
+                locationInfo = null,
                 showErrorDialog = false)
     }
 
     fun updateZipCode(zipCode: Int) {
-        viewstate.value = viewstate.value?.copy(zipCode = zipCode, showErrorDialog = false)
+        viewstate.value = viewstate.value?.copy(
+                zipCode = zipCode,
+                initialState = false,
+                showErrorDialog = false,
+                locationInfo = null)
 
         showProgressSpinner()
         // This is here simply to demonstrate ViewModel updates and how they work.
@@ -40,6 +52,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         Handler().postDelayed({
             getForecast(zipCode)
             getCurrentWeather(zipCode)
+            getZipCodeLocationInfo(zipCode)
         }, 3000)
     }
 
@@ -51,10 +64,7 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         weatherRepository.getForecasts(zipCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map<List<ForecastModel>> {
-                    forecastResultToForecastModelMapper.convertToListOfModels(it)
-                }
-                .doOnSuccess { onZipcodeSuccessfullyUpdatedListener.invoke(zipCode) }
+                .map { forecastResultToForecastModelMapper.convertToListOfModels(it) }
                 .subscribe(::showForecasts, ::showErrorDialog)
     }
 
@@ -64,6 +74,16 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { currentWeatherResultToCurrentWeatherModelMapper.convertToModel(it) }
                 .subscribe(::showCurrentWeather, {}) //NoOps on error. Already handled.
+    }
+
+    private fun getZipCodeLocationInfo(zipCode: Int) {
+        zipCodeInformationRepository.getZipCodeLocationInfo(zipCode)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { zipCodeLocationToLocationInfoModelMapper.convertToModel(it) }
+                .doOnSuccess { onZipcodeSuccessfullyUpdatedListener.invoke(zipCode) }
+                .subscribe(::showLocationInfo, {}) //NoOps on error. Already handled.
+
     }
 
     private fun showForecasts(forecasts: List<ForecastModel>) {
@@ -85,21 +105,31 @@ class WeatherListViewModel(private val weatherRepository: WeatherRepository):
         viewstate.value = viewstate.value?.copy(showingProgressSpinner = true)
     }
 
+    private fun showLocationInfo(locationInfoModel: LocationInfoModel) {
+        viewstate.value = viewstate.value?.copy(locationInfo = locationInfoModel.locationInfo)
+    }
+
     private fun showErrorDialog(throwable: Throwable) {
         // Reset all data on error and show the error prompt (if it's not already showing)
         val finalViewState = viewstate.value
 
-        finalViewState?.let { if (!finalViewState.showErrorDialog)
-            viewstate.value = WeatherListViewState(
-                forecasts = emptyList(),
-                currentWeather = null,
-                showingProgressSpinner = false,
-                zipCode = null,
-                showErrorDialog = true)}
+        finalViewState?.let {
+            if (!finalViewState.showErrorDialog)
+                viewstate.value = viewstate.value?.copy(
+                        forecasts = emptyList(),
+                        currentWeather = null,
+                        showingProgressSpinner = false,
+                        zipCode = null,
+                        locationInfo = null,
+                        showErrorDialog = true) }
     }
 
-    class Factory(private val weatherRepository: WeatherRepository): ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T
-                = WeatherListViewModel(weatherRepository = weatherRepository) as T
+    class Factory(private val weatherRepository: WeatherRepository,
+                  private val zipCodeInformationRepository: ZipCodeInformationRepository)
+        : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T = WeatherListViewModel(
+                weatherRepository = weatherRepository,
+                zipCodeInformationRepository = zipCodeInformationRepository
+        ) as T
     }
 }

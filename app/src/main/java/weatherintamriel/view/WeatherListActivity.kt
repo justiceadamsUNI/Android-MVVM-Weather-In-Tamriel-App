@@ -14,6 +14,7 @@ import android.view.View
 import android.view.animation.AnimationUtils.loadAnimation
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import justiceadams.com.weatherintamriel.R
 import kotlinx.android.synthetic.main.weather_list_content.*
 import weatherintamriel.WeatherInTamrielApplication
@@ -27,7 +28,6 @@ import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
-    private var readSharedPreferences: Boolean = false
     private lateinit var weatherListViewModel: WeatherListViewModel
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
@@ -59,7 +59,7 @@ class WeatherListActivity : AppCompatActivity() {
 
         weatherListViewState?.let {
             if(weatherListViewState.zipCode == null) {
-                if (!readSharedPreferences) determineAndShowStartupState()
+                if (weatherListViewState.initialState) determineAndShowStartupState()
                 else showZipCodeEntryDialog(
                         if (weatherListViewState.showErrorDialog)
                             R.string.error_finding_zip_code_prompt else
@@ -74,6 +74,9 @@ class WeatherListActivity : AppCompatActivity() {
         weatherListViewState
                 ?.let { setWeatherDataVisible(!weatherListViewState.showingProgressSpinner) }
                 ?: setWeatherDataVisible(false)
+
+        weatherListViewState
+                ?.let { weatherListViewState.locationInfo?.let{ showToastWithLocationInfo(it)} }
 
         controller.setData(
                 weatherListViewState?.forecasts.orEmpty(),
@@ -100,10 +103,14 @@ class WeatherListActivity : AppCompatActivity() {
 
     private fun determineAndShowStartupState() {
         val zipCode = readZipCodeFromSharedPreferences()
+
         zipCode?.let { weatherListViewModel.updateZipCode(zipCode) }
                 ?: showZipCodeEntryDialog(R.string.enter_zip_code_prompt)
+    }
 
-        readSharedPreferences = true
+    private fun showToastWithLocationInfo(locationInfo: String) {
+        Toast.makeText(this, "Showing weather for $locationInfo", Toast.LENGTH_SHORT)
+                .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

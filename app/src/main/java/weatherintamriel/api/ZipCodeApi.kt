@@ -3,6 +3,7 @@ package weatherintamriel.api
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
+import weatherintamriel.model.ZipCodeLocationInformationRequestResult
 import javax.inject.Singleton
 
 @Singleton
@@ -14,5 +15,6 @@ interface ZipCodeApi {
     }
 
     @GET("$APP_KEY/info.$FORMAT/{zip_code}/$UNITS")
-    fun getZipCodeLocationInfo(@Path("zip_code") zipCode: Int): Single<String> //toDo change to actually deserialize
+    fun getZipCodeLocationInfo(@Path("zip_code") zipCode: Int)
+            : Single<ZipCodeLocationInformationRequestResult>
 }

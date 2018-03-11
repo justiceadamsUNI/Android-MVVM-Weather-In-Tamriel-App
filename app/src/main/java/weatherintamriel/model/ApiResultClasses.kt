@@ -40,3 +40,6 @@ data class MainResult(val temp: Float,
                       val temp_min: Float,
                       val temp_max: Float,
                       val humidity: Int)
+
+data class ZipCodeLocationInformationRequestResult(val city: String,
+                                                   val state: String)
