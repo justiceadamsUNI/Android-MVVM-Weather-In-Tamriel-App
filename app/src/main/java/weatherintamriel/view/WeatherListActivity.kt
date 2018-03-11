@@ -28,6 +28,7 @@ import weatherintamriel.viewmodel.WeatherListViewState
 import javax.inject.Inject
 
 class WeatherListActivity : AppCompatActivity() {
+    private var updateZipCodeMenuItemEnabled: Boolean = false
     private lateinit var weatherListViewModel: WeatherListViewModel
     @Inject lateinit var weatherListViewModelFactory: WeatherListViewModel.Factory
 
@@ -74,6 +75,10 @@ class WeatherListActivity : AppCompatActivity() {
         weatherListViewState
                 ?.let { setWeatherDataVisible(!weatherListViewState.showingProgressSpinner) }
                 ?: setWeatherDataVisible(false)
+
+        weatherListViewState?.let {
+            showZipCodeMenuItemEnabled(!weatherListViewState.showingProgressSpinner)
+        }
 
         weatherListViewState
                 ?.let { weatherListViewState.locationInfo?.let{ showToastWithLocationInfo(it)} }
@@ -127,6 +132,16 @@ class WeatherListActivity : AppCompatActivity() {
         else -> {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    fun showZipCodeMenuItemEnabled(enableUpdateZipCodeItem: Boolean) {
+        updateZipCodeMenuItemEnabled = enableUpdateZipCodeItem
+        invalidateOptionsMenu()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.getItem(0)?.isEnabled = updateZipCodeMenuItemEnabled
+        return true
     }
 
     private fun setUpToolbar() {
