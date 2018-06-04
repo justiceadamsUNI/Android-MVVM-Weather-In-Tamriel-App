@@ -2,7 +2,7 @@
 
 buildscript {
     ext.support_version = '25.1.0'
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.40'
     ext.anko_version = '0.10.4'
     ext.gson_version = '2.8.0'
     ext.epoxy_version = '2.8.0'
