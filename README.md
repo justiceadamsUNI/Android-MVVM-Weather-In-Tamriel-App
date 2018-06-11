@@ -13,6 +13,7 @@ Table of contents
       * [Why Dagger?](#why-dagger)
       * [Why RxJava?](#why-rxjava)
       * [Why Epoxy?](#why-epoxy)
+	  * [Why Docker](#why-docker)
    * [Aditional reading on Android MVVM](#aditional-reading-on-android-mvvm)
    * [Questions?](#questions)
    * [Resources That Made This Project Possible](#resources-that-made-this-project-possible)
@@ -60,10 +61,17 @@ To make sense of what your seeing, consult the below tables for how dates in Tam
 |Loredas	                |Saturday              |
 
 
-How To Run The App
+How To Run The App (Now with Docker!)
 =================
-The app is not going to be deployed on the google play store for various reasons including licensing (I don't work for Bethesda yet) and API request limits (I don't own the API's being utilized). What this means is that to run the app you'll need to manually build the APK yourself. Simply download android studio if you don't already have it installed, clone the repo, and build the project APK to whichever device/emulator you wish! For more on how to run and deploy a project with Android Studio, I encourage you to read the following [page](https://developer.android.com/studio/run/index.html) of the Android developer documentation.
+The app is not going to be deployed on the google play store for various reasons including licensing (I don't work for Bethesda yet) and API request limits (I don't own the API's being utilized). What this means is that to run the app you'll need to manually build the APK yourself. Luckily you are on the docker-branch, meaning this should be an easy process if you are familiar with Docker. Lets run through the steps for building the app yourself.
+1. First, you'll need an install of [Docker](LINK) on your machine. Make sure your docker configuration is set to `windows containers`. 
+2. Now `cd` into this directory with your favorite bash terminal and run the script `build-docker-image.sh`. This will setup a linux-based docker image on your machine containing [Java 8](LINK), the [Android SDK](LINK), [Gradle](LINK), and the Android SDK build/platform [tools](LINK). Basically, everything you need to compile all of the Kotlin code and build yourself an APK. Note that this will take a while the first time, as it has to donwload all of the packages within the docker container. This will take a few minutes to download the entire Android SDK.
+3. Ensure the process worked by running `docker images`. You should see an image named `android`.
+4. Use your favorite bash terminal and run the script `buildapk.sh` from within this directory. This will start the android container, mount the current project directory within the docker container, and use gradle to to build a debug apk. This process will take a few minutes to build the apk, so be patient.
+5. You should now have a file called `app-debug.apk` within your local repository directory. Now you can simply file transfer that apk to your prefered device/emulator, or if you have [Adb](LINK) installed, you can simply connect your device, and from within this directory, use the command `adb install` in your given terminal. I highly recommend using adb, as it expedites the uploading process.
+6. Enjoy the app!
 
+If you want to know more about why I used docker, see the [Why Docker](Link) section of this readme!
 
 An Agile Approach
 =================
@@ -157,6 +165,11 @@ It's easy to see what's happening. We get the data from the repository off the m
 Why Epoxy
 =================
 [Epoxy](https://github.com/airbnb/epoxy) is Airbnb's library which allows us to create a complex recyclerview. It uses its own MVC architecture where you define a controller to build in the recycler view, each of which handles their own rendering. This allows us to create a RecyclerView whose adapter has multiple types of viewholders. You'll notice that the first element of the weather list has a different layout from every other element (the forecast). We can do this with epoxy without having to write an extension to the RecyclerView.Adapter. Pretty slick!
+
+
+Why Docker
+=================
+-------ToDo-----
 
 
 Aditional reading on Android MVVM
