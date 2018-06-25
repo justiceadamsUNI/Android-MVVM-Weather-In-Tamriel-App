@@ -13,7 +13,7 @@ Table of contents
       * [Why Dagger?](#why-dagger)
       * [Why RxJava?](#why-rxjava)
       * [Why Epoxy?](#why-epoxy)
-	  * [Why Docker](#why-docker)
+	  * [Why Docker?](#why-docker)
    * [Aditional reading on Android MVVM](#aditional-reading-on-android-mvvm)
    * [Questions?](#questions)
    * [Resources That Made This Project Possible](#resources-that-made-this-project-possible)
@@ -68,12 +68,12 @@ The app is not going to be deployed on the google play store for various reasons
 2. Now `cd` into this directory with your favorite bash terminal and run the script `build-docker-image.sh`. This will setup a linux-based docker image on your machine containing [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), the [Android SDK](https://developer.android.com/studio/), [Gradle](https://gradle.org/), and the Android SDK build/platform [tools](https://developer.android.com/studio/releases/build-tools). Basically, everything you need to compile all of the Kotlin code and build yourself an APK. Note that this will take a while the first time, as it has to download all of the packages within the docker container. This will take a few minutes to download the entire Android SDK.
 3. Ensure the process worked by running `docker images`. You should see an image named `android`.
 4. Use your favorite bash terminal and run the script `buildapk.sh` from within this directory. This will start the android container, mount the current project directory within the docker container, and use gradle to to build a debug apk. This process will take a few minutes to build the apk, so be patient.
-5. You should now have a file called `app-debug.apk` within your local repository directory. Now you can simply file transfer that apk to your prefered device/emulator, or if you have [Adb](LINK) installed, you can simply connect your device, and from within this directory, use the command `adb install` in your given terminal. I highly recommend using adb, as it expedites the uploading process.
+5. You should now have a file called `app-debug.apk` within your local repository directory. Now you can simply file transfer that apk to your prefered device/emulator, or if you have [Adb](https://developer.android.com/studio/command-line/adb) installed, you can simply connect your device, and from within this directory, use the command `adb install` in your given terminal. I highly recommend using adb, as it expedites the uploading process.
 6. Enjoy the app!
 
 Note: You may have to change the permision on these bash scripts using `chmod +x filename`
 
-If you want to know more about why I used docker, see the [Why Docker](Link) section of this readme!
+If you want to know more about why I used docker, see the [Why Docker](#why-docker) section of this readme!
 
 An Agile Approach
 =================
@@ -210,3 +210,4 @@ Resources That Made This Project Possible
 * [Android Studio](https://developer.android.com/studio/index.html) - Android Studio provides the fastest tools for building apps on every type of Android device
 * [Github](https://github.com/) - GitHub is a web-based Git or version control repository and Internet hosting service
 * [EZGif](https://ezgif.com/) - Online GIF maker and image editor. Used to create gifs from mp4's for this readme
+* [Docker](https://www.docker.com/) - Docker is a computer program that performs operating-system-level virtualization also known as containerization
