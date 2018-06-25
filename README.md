@@ -64,12 +64,14 @@ To make sense of what your seeing, consult the below tables for how dates in Tam
 How To Run The App (Now with Docker!)
 =================
 The app is not going to be deployed on the google play store for various reasons including licensing (I don't work for Bethesda yet) and API request limits (I don't own the API's being utilized). What this means is that to run the app you'll need to manually build the APK yourself. Luckily you are on the docker-branch, meaning this should be an easy process if you are familiar with Docker. Lets run through the steps for building the app yourself.
-1. First, you'll need an install of [Docker](LINK) on your machine. Make sure your docker configuration is set to `windows containers`. 
-2. Now `cd` into this directory with your favorite bash terminal and run the script `build-docker-image.sh`. This will setup a linux-based docker image on your machine containing [Java 8](LINK), the [Android SDK](LINK), [Gradle](LINK), and the Android SDK build/platform [tools](LINK). Basically, everything you need to compile all of the Kotlin code and build yourself an APK. Note that this will take a while the first time, as it has to donwload all of the packages within the docker container. This will take a few minutes to download the entire Android SDK.
+1. First, you'll need an install of [Docker](https://www.docker.com/) on your machine. Make sure your docker configuration is set to `windows containers`. 
+2. Now `cd` into this directory with your favorite bash terminal and run the script `build-docker-image.sh`. This will setup a linux-based docker image on your machine containing [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), the [Android SDK](https://developer.android.com/studio/), [Gradle](https://gradle.org/), and the Android SDK build/platform [tools](https://developer.android.com/studio/releases/build-tools). Basically, everything you need to compile all of the Kotlin code and build yourself an APK. Note that this will take a while the first time, as it has to download all of the packages within the docker container. This will take a few minutes to download the entire Android SDK.
 3. Ensure the process worked by running `docker images`. You should see an image named `android`.
 4. Use your favorite bash terminal and run the script `buildapk.sh` from within this directory. This will start the android container, mount the current project directory within the docker container, and use gradle to to build a debug apk. This process will take a few minutes to build the apk, so be patient.
 5. You should now have a file called `app-debug.apk` within your local repository directory. Now you can simply file transfer that apk to your prefered device/emulator, or if you have [Adb](LINK) installed, you can simply connect your device, and from within this directory, use the command `adb install` in your given terminal. I highly recommend using adb, as it expedites the uploading process.
 6. Enjoy the app!
+
+Note: You may have to change the permision on these bash scripts using `chmod +x filename`
 
 If you want to know more about why I used docker, see the [Why Docker](Link) section of this readme!
 
@@ -169,7 +171,7 @@ Why Epoxy
 
 Why Docker
 =================
--------ToDo-----
+[Docker](https://www.docker.com/) is a very valuable tool which allows us to bundle our application and its dependencies into what's known as a container. By using docker, I can enusure that everyone with docker installed on their machine has the ability to build the APK for their own use. Docker makes it so that you won't have any errors building the APK (If you chose to do so via docker).
 
 
 Aditional reading on Android MVVM
