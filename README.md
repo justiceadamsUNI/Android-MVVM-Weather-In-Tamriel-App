@@ -64,6 +64,8 @@ How To Run The App
 =================
 The app is not going to be deployed on the google play store for various reasons including licensing (I don't work for Bethesda yet) and API request limits (I don't own the API's being utilized). What this means is that to run the app you'll need to manually build the APK yourself. Simply download android studio if you don't already have it installed, clone the repo, and build the project APK to whichever device/emulator you wish! For more on how to run and deploy a project with Android Studio, I encourage you to read the following [page](https://developer.android.com/studio/run/index.html) of the Android developer documentation.
 
+If you wish to use Docker to build the APK (I highly recomend you do so), feel free to check out the docker-based-install branch and browse through the readme over there. It will contain all the instructions needed to build the app in a container!
+
 
 An Agile Approach
 =================
